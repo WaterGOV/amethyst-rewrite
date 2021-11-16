@@ -20,29 +20,36 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.api.data;
+package net.lucypoulton.amethyst.core.data;
 
-import org.spongepowered.configurate.ConfigurationNode;
+import net.lucypoulton.amethyst.api.data.DataManager;
+import net.lucypoulton.amethyst.api.data.DataStore;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.UUID;
+
 
 /**
- * A data store based around a {@link ConfigurationNode}.
- *
- * @author lucy
- * @since 1.0.0
+ * TODO - support for mysql
  */
-public interface DataStore {
-    /**
-     * Gets the node used to interface with data.
-     */
-    ConfigurationNode node();
+public class CoreDataManager implements DataManager {
 
-    /**
-     * Saves the changes made to disk.
-     */
-    void save();
+    private final Path rootPath;
 
-    /**
-     * Reloads the file from disk, disposing of any unsaved changes.
-     */
-    void reload();
+    public CoreDataManager(Path rootPath) throws IOException {
+        this.rootPath = rootPath;
+
+        Files.createDirectories(rootPath.resolve("players"));
+    }
+
+    @Override
+    public DataStore forPlayer(UUID uuid) {
+        try {
+            return new GsonDataStore(rootPath.resolve("players").resolve(uuid + ".json"));
+        } catch (IOException e) {
+            return null;
+        }
+    }
 }

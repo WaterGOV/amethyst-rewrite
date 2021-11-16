@@ -20,29 +20,48 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.api.data;
+package net.lucypoulton.amethyst.core.data;
 
+import net.lucypoulton.amethyst.api.data.DataStore;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
-/**
- * A data store based around a {@link ConfigurationNode}.
- *
- * @author lucy
- * @since 1.0.0
- */
-public interface DataStore {
-    /**
-     * Gets the node used to interface with data.
-     */
-    ConfigurationNode node();
+import java.io.IOException;
+import java.nio.file.Path;
 
-    /**
-     * Saves the changes made to disk.
-     */
-    void save();
+public class GsonDataStore implements DataStore {
 
-    /**
-     * Reloads the file from disk, disposing of any unsaved changes.
-     */
-    void reload();
+    private final GsonConfigurationLoader loader;
+    private ConfigurationNode node;
+
+    public GsonDataStore(Path path) throws IOException {
+        loader = GsonConfigurationLoader.builder()
+            .path(path)
+            .build();
+        node = loader.load();
+    }
+
+    @Override
+    public ConfigurationNode node() {
+        return null;
+    }
+
+    @Override
+    public void save() {
+        try {
+            loader.save(node);
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void reload() {
+        try {
+            node = loader.load();
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -20,57 +20,81 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.api.platform;
+package net.lucypoulton.amethyst.core;
 
 import net.kyori.adventure.text.Component;
 import net.lucypoulton.amethyst.api.audience.AmethystPlayer;
+import net.lucypoulton.amethyst.api.data.DataManager;
 import net.lucypoulton.amethyst.api.data.DataStore;
-import net.lucypoulton.squirtgun.platform.Platform;
+import net.lucypoulton.amethyst.api.platform.AmethystPlatform;
+import net.lucypoulton.amethyst.api.platform.ModuleManager;
+import net.lucypoulton.amethyst.core.data.CoreDataManager;
 import net.lucypoulton.squirtgun.platform.audience.SquirtgunPlayer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.UUID;
 
-public interface AmethystPlatform extends Platform {
-    /**
-     * Gets the module manager.
-     */
-    ModuleManager getModuleManager();
+public abstract class CoreAmethystPlatform implements AmethystPlatform {
+
+    private DataManager dataManager;
+
+    void setDataPath(Path path) throws IOException {
+        dataManager = new CoreDataManager(path);
+    }
 
     /**
-     * Gets the plugin's global configuration.
+     * TODO
      */
-    DataStore getConfig();
+    @Override
+    public ModuleManager getModuleManager() {
+        return null;
+    }
+
+    /**
+     * TODO
+     */
+    @Override
+    public DataStore getConfig() {
+        return null;
+    }
+
+    /**
+     * TODO
+     */
+    @Override
+    public AmethystPlayer getPlayer(String name) {
+        return null;
+    }
+
+    /**
+     * TODO
+     */
+    @Override
+    public AmethystPlayer getPlayer(UUID uuid) {
+        return null;
+    }
+
+    /**
+     * TODO
+     */
+    @Override
+    public AmethystPlayer asAmethystPlayer(SquirtgunPlayer player) {
+        return player instanceof AmethystPlayer ? (AmethystPlayer) player : new AmethystPlayerWrapper(player, this);
+    }
 
     @Override
-    AmethystPlayer getPlayer(String name);
+    public DataStore getDataStore() {
+        return null;
+    }
 
     @Override
-    AmethystPlayer getPlayer(UUID uuid);
+    public Component parsePlaceholders(String input, @Nullable AmethystPlayer user) {
+        return null;
+    }
 
-    /**
-     * Gets a {@link SquirtgunPlayer} as an {@link AmethystPlayer}.
-     */
-    AmethystPlayer asAmethystPlayer(SquirtgunPlayer player);
-
-    /**
-     * Gets a global data store that will be shared across any servers running on the same database. This store should
-     * be used to store persistent data, unrelated to config. Data should not be specific to any particular player -
-     * use {@link AmethystPlayer#getDataStore()} for this purpose.
-     *
-     * @return a global data store
-     */
-    DataStore getDataStore();
-
-    /**
-     * Parses a string containing amethyst (not PlaceholderAPI) placeholders that will get parsed to components.
-     * Any invalid placeholders will be ignored and included as-is.
-     *
-     * @param input the string to process
-     * @param user  a user for the placeholders to target, if not needed for the placeholder, then null
-     * @return a Component, possibly containing extra data, including the parsed placeholders
-     */
-    Component parsePlaceholders(String input, @Nullable AmethystPlayer user);
+    public DataManager getDataManager() {
+        return dataManager;
+    }
 }
-

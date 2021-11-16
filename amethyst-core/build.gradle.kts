@@ -20,29 +20,18 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.api.data;
+plugins {
+    java
+}
 
-import org.spongepowered.configurate.ConfigurationNode;
+repositories {
+    mavenCentral()
+}
 
-/**
- * A data store based around a {@link ConfigurationNode}.
- *
- * @author lucy
- * @since 1.0.0
- */
-public interface DataStore {
-    /**
-     * Gets the node used to interface with data.
-     */
-    ConfigurationNode node();
+dependencies {
+    implementation(platform(project(":amethyst-bom")))
+    implementation(project(":amethyst-api"))
 
-    /**
-     * Saves the changes made to disk.
-     */
-    void save();
-
-    /**
-     * Reloads the file from disk, disposing of any unsaved changes.
-     */
-    void reload();
+    implementation("com.google.code.gson:gson")
+    implementation("org.spongepowered:configurate-gson")
 }

@@ -22,27 +22,11 @@
 
 package net.lucypoulton.amethyst.api.data;
 
-import org.spongepowered.configurate.ConfigurationNode;
+import java.util.UUID;
 
 /**
- * A data store based around a {@link ConfigurationNode}.
- *
- * @author lucy
- * @since 1.0.0
+ * TODO javadoc
  */
-public interface DataStore {
-    /**
-     * Gets the node used to interface with data.
-     */
-    ConfigurationNode node();
-
-    /**
-     * Saves the changes made to disk.
-     */
-    void save();
-
-    /**
-     * Reloads the file from disk, disposing of any unsaved changes.
-     */
-    void reload();
+public interface DataManager {
+    DataStore forPlayer(UUID uuid);
 }

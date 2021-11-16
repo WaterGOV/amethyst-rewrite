@@ -23,7 +23,7 @@
 package net.lucypoulton.amethyst.api;
 
 import net.kyori.adventure.text.Component;
-import net.lucypoulton.amethyst.api.audience.AmethystUser;
+import net.lucypoulton.amethyst.api.audience.AmethystPlayer;
 import net.lucypoulton.squirtgun.command.node.CommandNode;
 import net.lucypoulton.squirtgun.util.SemanticVersion;
 import org.jetbrains.annotations.NotNull;
@@ -54,17 +54,19 @@ public interface AmethystModule {
     /**
      * Reloads this module.
      */
-    void reload();
+    default void reload() {
+    }
 
     /**
      * Prepares this module for disposal.
      */
-    void dispose();
+    default void dispose() {
+    }
 
     /**
      * Gets the commands that this module exposes.
      */
-    default @NotNull List<CommandNode<? super AmethystUser>> commands() {
+    default @NotNull List<CommandNode<? super AmethystPlayer>> commands() {
         return List.of();
     }
 
@@ -76,9 +78,11 @@ public interface AmethystModule {
      * @param user a user for the placeholders to target. This parameter may be null if the placeholder requested is
      *             not player-specific.
      * @return a   component containing the parsed placeholder, or null if this placeholder is invalid or a
-     *             player-specific placeholder has been requested when user is null
+     * player-specific placeholder has been requested when user is null
      * @since 1.0.0
      */
     @Nullable
-    Component parsePlaceholder(String in, @Nullable AmethystUser user);
+    default Component parsePlaceholder(String in, @Nullable AmethystPlayer user) {
+        return null;
+    }
 }

@@ -20,29 +20,31 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.api.data;
+package net.lucypoulton.amethyst.api.audience;
 
-import org.spongepowered.configurate.ConfigurationNode;
+import net.kyori.adventure.text.Component;
+import net.lucypoulton.amethyst.api.data.DataStore;
+import net.lucypoulton.squirtgun.platform.audience.SquirtgunPlayer;
 
-/**
- * A data store based around a {@link ConfigurationNode}.
- *
- * @author lucy
- * @since 1.0.0
- */
-public interface DataStore {
-    /**
-     * Gets the node used to interface with data.
-     */
-    ConfigurationNode node();
+public interface AmethystPlayer extends SquirtgunPlayer {
 
     /**
-     * Saves the changes made to disk.
+     * Gets the player's display name. This will vary depending on the enabled modules and the config, but may contain:
+     * <ul>
+     *     <li>nicknames</li>
+     *     <li>prefixes and suffixes for ranks</li>
+     *     <li>statistics</li>
+     * </ul>
+     *
+     * @since 1.0.0
      */
-    void save();
+    Component displayName();
 
     /**
-     * Reloads the file from disk, disposing of any unsaved changes.
+     * Gets the player's global data store. This should be used to store player-specific data.
+     *
+     * @return the user's global data store
+     * @since 1.0.0
      */
-    void reload();
+    DataStore getDataStore();
 }

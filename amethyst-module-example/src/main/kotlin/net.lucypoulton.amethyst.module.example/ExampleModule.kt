@@ -20,31 +20,32 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.api.audience;
+package net.lucypoulton.amethyst.module.example
 
-import net.kyori.adventure.text.Component;
-import net.lucypoulton.amethyst.api.data.DataStore;
-import net.lucypoulton.squirtgun.platform.audience.SquirtgunPlayer;
+import net.kyori.adventure.text.Component
+import net.lucypoulton.amethyst.api.AmethystModule
+import net.lucypoulton.amethyst.api.audience.AmethystPlayer
+import net.lucypoulton.squirtgun.command.condition.Condition
+import net.lucypoulton.squirtgun.command.node.CommandNode
+import net.lucypoulton.squirtgun.command.node.NodeBuilder
+import net.lucypoulton.squirtgun.platform.audience.PermissionHolder
+import net.lucypoulton.squirtgun.util.SemanticVersion
 
-public interface AmethystUser extends SquirtgunPlayer {
+/**
+ * An example Amethyst module.
+ */
+class ExampleModule : AmethystModule {
+    override fun name() = "example"
 
-    /**
-     * Gets the user's display name. This will vary depending on the enabled modules and the config, but may contain:
-     * <ul>
-     *     <li>nicknames</li>
-     *     <li>prefixes and suffixes for ranks</li>
-     *     <li>statistics</li>
-     * </ul>
-     *
-     * @since 1.0.0
-     */
-    Component displayName();
+    override fun version(): SemanticVersion = SemanticVersion.parse("1.0.0-SNAPSHOT")
 
-    /**
-     * Gets the user's global data store. This should be used to store player-specific data.
-     *
-     * @return the user's global data store
-     * @since 1.0.0
-     */
-    DataStore getDataStore();
+    override fun authors() = arrayOf("Lucy Poulton")
+
+    override fun commands(): List<CommandNode<in AmethystPlayer>> = listOf(
+        NodeBuilder<PermissionHolder>()
+            .name("Example")
+            .condition(Condition.alwaysTrue())
+            .executes { Component.text("example") }
+            .build()
+    )
 }

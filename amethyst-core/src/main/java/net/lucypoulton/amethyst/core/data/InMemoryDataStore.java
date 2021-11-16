@@ -20,29 +20,30 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.api.data;
+package net.lucypoulton.amethyst.core.data;
 
+import net.lucypoulton.amethyst.api.data.DataStore;
 import org.spongepowered.configurate.ConfigurationNode;
 
 /**
- * A data store based around a {@link ConfigurationNode}.
- *
- * @author lucy
- * @since 1.0.0
+ * A data store that stores data in memory. Not persistent.
  */
-public interface DataStore {
-    /**
-     * Gets the node used to interface with data.
-     */
-    ConfigurationNode node();
+public class InMemoryDataStore implements DataStore {
 
-    /**
-     * Saves the changes made to disk.
-     */
-    void save();
+    
 
-    /**
-     * Reloads the file from disk, disposing of any unsaved changes.
-     */
-    void reload();
+    @Override
+    public ConfigurationNode node() {
+        return null;
+    }
+
+    @Override
+    public void save() {
+
+    }
+
+    @Override
+    public void reload() {
+
+    }
 }
