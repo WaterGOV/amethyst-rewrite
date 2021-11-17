@@ -23,6 +23,7 @@
 package net.lucypoulton.amethyst.core;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.lucypoulton.amethyst.api.audience.AmethystPlayer;
@@ -106,7 +107,7 @@ public class CoreAmethystPlatform implements AmethystPlatform {
         return new FormatProvider() {
             @Override
             public Component formatMain(@NotNull String input, @NotNull TextDecoration[] formatters) {
-                return Component.text(input);
+                return Component.text(input).color(NamedTextColor.WHITE);
             }
 
             @Override

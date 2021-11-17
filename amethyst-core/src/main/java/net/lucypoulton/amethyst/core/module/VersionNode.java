@@ -22,42 +22,39 @@
 
 package net.lucypoulton.amethyst.core.module;
 
+import net.kyori.adventure.text.Component;
 import net.lucypoulton.amethyst.api.AmethystModule;
-import net.lucypoulton.amethyst.api.audience.AmethystPlayer;
 import net.lucypoulton.amethyst.api.platform.AmethystPlatform;
-import net.lucypoulton.squirtgun.command.node.CommandNode;
+import net.lucypoulton.squirtgun.command.condition.Condition;
+import net.lucypoulton.squirtgun.command.context.CommandContext;
+import net.lucypoulton.squirtgun.command.node.AbstractNode;
+import net.lucypoulton.squirtgun.format.FormatProvider;
 import net.lucypoulton.squirtgun.platform.audience.PermissionHolder;
-import net.lucypoulton.squirtgun.util.SemanticVersion;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+public class VersionNode extends AbstractNode<PermissionHolder> {
 
-public class CoreModule extends AmethystModule {
+    private final AmethystPlatform platform;
 
-    private final CommandNode<PermissionHolder> node;
-
-    public CoreModule(@NotNull AmethystPlatform platform) {
-        super(platform);
-        node = new VersionNode(platform);
+    public VersionNode(AmethystPlatform platform) {
+        super("amethyst", "Shows the plugin's and loaded modules' versions", Condition.alwaysTrue());
+        this.platform = platform;
     }
 
     @Override
-    public @NotNull String getPluginName() {
-        return "Core";
-    }
-
-    @Override
-    public @NotNull SemanticVersion getPluginVersion() {
-        return getPlatform().amethystVersion();
-    }
-
-    @Override
-    public @NotNull String[] getAuthors() {
-        return new String[] {"Lucy Poulton"};
-    }
-
-    @Override
-    public @NotNull List<CommandNode<? super AmethystPlayer>> commands() {
-        return List.of(node);
+    public @Nullable Component execute(CommandContext context) {
+        final FormatProvider fmt = context.getFormat();
+        Component out = fmt.formatMain("Amethyst version ")
+            .append(fmt.formatAccent(platform.amethystVersion().toString()))
+            .append(Component.newline());
+        for (AmethystModule module : platform.getModuleManager().getLoadedModules()) {
+            out = out.append(
+                fmt.formatAccent(module.getPluginName())
+                    .append(fmt.formatMain(" version "))
+                    .append(fmt.formatAccent(module.getPluginVersion().toString()))
+                    .append(Component.newline())
+            );
+        }
+        return out;
     }
 }
