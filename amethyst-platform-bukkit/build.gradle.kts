@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 /*
  * Copyright (c) 2021 Lucy Poulton.
  *
@@ -22,7 +24,8 @@
 
 plugins {
     java
-    id("com.github.johnrengelman.shadow") version "7.1.0"
+    id("com.github.johnrengelman.shadow")
+    id("amethyst.dependency-relocation")
 }
 
 tasks {
@@ -31,11 +34,8 @@ tasks {
     }
     shadowJar {
         archiveClassifier.set("")
+        // this has got me too many times. not happening again!
         outputs.upToDateWhen { false }
-        relocate("net.kyori", "net.lucypoulton.amethyst.dependency.kyori")
-        relocate("net.lucypoulton.squirtgun", "net.lucypoulton.amethyst.dependency.squirtgun")
-        relocate("org.spongepowered.configurate", "net.lucypoulton.amethyst.dependency.configurate")
-
         dependencies {
             exclude(dependency("com.google..*:.*:.*"))
             exclude(dependency("io.leangen.geantyref:.*:.*"))
@@ -43,6 +43,11 @@ tasks {
     }
     build {
         dependsOn(shadowJar)
+    }
+
+    processResources {
+        outputs.upToDateWhen { false }
+        filter<ReplaceTokens>("tokens" to mapOf("version" to project.version))
     }
 }
 

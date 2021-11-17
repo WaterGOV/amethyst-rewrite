@@ -1,5 +1,5 @@
 name: "Amethyst"
-version: "1.0.0-SNAPSHOT" # TODO automate with the build script
+version: @version@
 main: net.lucypoulton.amethyst.bukkit.AmethystBukkitPlugin
 commands:
   amethyst:

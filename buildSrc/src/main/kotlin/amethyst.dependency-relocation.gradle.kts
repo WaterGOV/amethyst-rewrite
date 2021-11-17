@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 /*
  * Copyright (c) 2021 Lucy Poulton.
  *
@@ -21,16 +23,19 @@
  */
 
 plugins {
-    java
-    kotlin("jvm")
-    id("amethyst.dependency-relocation")
+    id("com.github.johnrengelman.shadow")
 }
 
-repositories {
-    mavenCentral()
-}
+tasks {
+    val shadowTask = withType<ShadowJar> {
+        relocate("net.kyori", "net.lucypoulton.amethyst.dependency.kyori")
+        relocate("net.lucypoulton.squirtgun", "net.lucypoulton.amethyst.dependency.squirtgun")
+        relocate("org.spongepowered.configurate", "net.lucypoulton.amethyst.dependency.configurate")
+        exclude("org/intellij/**", "org/jetbrains/**", "kotlin/**")
+        archiveClassifier.set("")
+    }
 
-dependencies {
-    compileOnly(platform(project(":amethyst-bom")))
-    compileOnly(project(":amethyst-api"))
+    named("build") {
+        dependsOn(shadowTask)
+    }
 }

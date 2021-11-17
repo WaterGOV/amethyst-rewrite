@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 /*
  * Copyright (c) 2021 Lucy Poulton.
  *
@@ -22,6 +24,12 @@
 
 plugins {
     `java-library`
+}
+
+tasks.processResources {
+    // this thing likes to bite me when i don't clean, force it to happen
+    outputs.upToDateWhen { false }
+    filter<ReplaceTokens>("tokens" to mapOf("version" to project.version))
 }
 
 repositories {

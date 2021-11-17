@@ -21,16 +21,17 @@
  */
 
 plugins {
-    java
-    kotlin("jvm")
-    id("amethyst.dependency-relocation")
+    `kotlin-dsl`
 }
 
+val shadowVersion = "7.1.0"
+
 repositories {
-    mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
-    compileOnly(platform(project(":amethyst-bom")))
-    compileOnly(project(":amethyst-api"))
+    implementation("org.gradle.kotlin:gradle-kotlin-dsl-plugins:2.1.7")
+    implementation("com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:7.1.0")
 }
+

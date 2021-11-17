@@ -123,7 +123,7 @@ public class CoreAmethystPlatform implements AmethystPlatform {
 
     @Override
     public SemanticVersion amethystVersion() {
-        return SemanticVersion.parse("1.0.0-SNAPSHOT"); // TODO delegate to buildsystem
+        return AmethystVersion.VERSION;
     }
 
     public DataManager getDataManager() {

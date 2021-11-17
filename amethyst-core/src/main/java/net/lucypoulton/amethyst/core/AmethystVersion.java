@@ -20,17 +20,22 @@
  * SOFTWARE.
  */
 
-plugins {
-    java
-    kotlin("jvm")
-    id("amethyst.dependency-relocation")
-}
+package net.lucypoulton.amethyst.core;
 
-repositories {
-    mavenCentral()
-}
+import net.lucypoulton.squirtgun.util.SemanticVersion;
 
-dependencies {
-    compileOnly(platform(project(":amethyst-bom")))
-    compileOnly(project(":amethyst-api"))
+import java.io.InputStream;
+import java.util.Objects;
+import java.util.Scanner;
+
+public class AmethystVersion {
+    public static final SemanticVersion VERSION;
+
+    static {
+        InputStream file = AmethystVersion.class.getClassLoader().getResourceAsStream("amethyst-version.txt");
+        Objects.requireNonNull(file);
+        VERSION = SemanticVersion.parse(new Scanner(file)
+            .useDelimiter("\\A")
+            .next());
+    }
 }
