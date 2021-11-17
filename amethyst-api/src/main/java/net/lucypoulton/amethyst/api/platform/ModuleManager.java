@@ -25,6 +25,8 @@ package net.lucypoulton.amethyst.api.platform;
 import net.lucypoulton.amethyst.api.AmethystModule;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 
 public interface ModuleManager {
@@ -69,6 +71,11 @@ public interface ModuleManager {
      * @since 1.0.0
      */
     void unloadModule(AmethystModule module);
+
+    /**
+     * Loads all modules that can be discovered from JAR files in the given path.
+     */
+    void loadFromPath(Path path) throws IOException;
 
     /**
      * Calls {@link AmethystModule#reload()} on all loaded modules.

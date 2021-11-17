@@ -25,7 +25,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     java
     id("com.github.johnrengelman.shadow")
-    id("amethyst.dependency-relocation")
 }
 
 tasks {
@@ -40,6 +39,13 @@ tasks {
             exclude(dependency("com.google..*:.*:.*"))
             exclude(dependency("io.leangen.geantyref:.*:.*"))
         }
+
+        // this section is duplicated as to not exclude kotlin
+        relocate("net.kyori", "net.lucypoulton.amethyst.dependency.kyori")
+        relocate("net.lucypoulton.squirtgun", "net.lucypoulton.amethyst.dependency.squirtgun")
+        relocate("org.spongepowered.configurate", "net.lucypoulton.amethyst.dependency.configurate")
+        relocate("kotlin", "net.lucypoulton.amethyst.dependency.kotlin")
+        exclude("org/intellij/**", "org/jetbrains/**")
     }
     build {
         dependsOn(shadowJar)

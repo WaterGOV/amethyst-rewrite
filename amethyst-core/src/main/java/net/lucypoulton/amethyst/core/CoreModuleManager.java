@@ -29,11 +29,21 @@ import net.lucypoulton.amethyst.api.platform.ModuleManager;
 import net.lucypoulton.squirtgun.command.node.CommandNode;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 public class CoreModuleManager implements ModuleManager {
 
@@ -66,7 +76,7 @@ public class CoreModuleManager implements ModuleManager {
 
     @Override
     public <T extends AmethystModule> void loadModule(Class<T> clazz) throws ModuleInitException {
-        platform.getLogger().info("Loading module" + clazz.getSimpleName());
+        platform.getLogger().info("Loading module " + clazz.getSimpleName());
         if (Modifier.isAbstract(clazz.getModifiers())) {
             throw new ModuleInitException("Module " + clazz.getName() + " is abstract");
         }
@@ -90,10 +100,65 @@ public class CoreModuleManager implements ModuleManager {
 
     @Override
     public void unloadModule(AmethystModule module) {
-        platform.getLogger().info("Unloading module" + module.getPluginName());
+        platform.getLogger().info("Unloading module " + module.getPluginName());
         module.onDisable();
         // TODO - unregister commands
         loadedModuleMap.remove(module.getClass(), module);
-        platform.getLogger().info("Unloaded module" + module.getPluginName());
+        platform.getLogger().info("Unloaded module " + module.getPluginName());
+    }
+
+    /**
+     * Uses hacky reflection magic to load jars at runtime.
+     */
+    @Override
+    public void loadFromPath(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            platform.getLogger().warning("Modules directory does not exist. No modules loaded");
+            return;
+        }
+        if (Files.isDirectory(path)) {
+            Files.list(path).forEach(x -> {
+                try {
+                    loadFromPath(x);
+                } catch (Exception e) {
+                    platform.getLogger().warning("While loading a module: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            });
+            return;
+        }
+
+        final URL jar;
+        try {
+            jar = path.toUri().toURL();
+        } catch (MalformedURLException e) {
+            // this should really never happen
+            e.printStackTrace();
+            return;
+        }
+
+        final URLClassLoader loader = new URLClassLoader(new URL[]{jar}, AmethystModule.class.getClassLoader());
+
+        try (final JarInputStream stream = new JarInputStream(jar.openStream())) {
+            JarEntry entry;
+            while ((entry = stream.getNextJarEntry()) != null) {
+                final String name = entry.getName();
+                if (!name.endsWith(".class") || name.startsWith("META-INF")) {
+                    continue;
+                }
+
+                final String className = name.substring(0, name.lastIndexOf('.')).replace('/', '.');
+                try {
+                    final Class<?> loaded = loader.loadClass(className);
+                    if (AmethystModule.class.isAssignableFrom(loaded)) {
+                        loadModule(loaded.asSubclass(AmethystModule.class));
+                    }
+                } catch (final NoClassDefFoundError ignored) {
+                    platform.getLogger().warning("Failed to load class '" + className + "'");
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new ModuleInitException("Error while loading class " + path.getFileName(), e);
+        }
     }
 }

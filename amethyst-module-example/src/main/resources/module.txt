@@ -1,1 +1,0 @@
-net.lucypoulton.amethyst.module.example.ExampleModule

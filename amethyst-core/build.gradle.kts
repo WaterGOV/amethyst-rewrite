@@ -42,4 +42,5 @@ dependencies {
 
     implementation("com.google.code.gson:gson")
     implementation("org.spongepowered:configurate-gson")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
 }

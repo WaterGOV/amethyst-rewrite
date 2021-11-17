@@ -1,6 +1,9 @@
 name: "Amethyst"
 version: @version@
-main: net.lucypoulton.amethyst.bukkit.AmethystBukkitPlugin
+main: "net.lucypoulton.amethyst.bukkit.AmethystBukkitPlugin"
+api-version: "1.17"
 commands:
   amethyst:
     description: "Amethyst plugin management commands"
+  example:
+    description: "Example module command"

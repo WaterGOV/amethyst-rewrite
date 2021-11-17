@@ -48,6 +48,12 @@ public class AmethystPlugin extends SquirtgunPlugin<AmethystPlatform> {
         getPlatform().getEventManager().register(
             EventHandler.executes(PluginReloadEvent.class, x -> getPlatform().getModuleManager().reloadModules())
         );
+        try {
+            getPlatform().getModuleManager().loadFromPath(getPlatform().getConfigPath(this).resolve("modules"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            onDisable();
+        }
     }
 
     @Override

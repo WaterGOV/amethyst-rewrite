@@ -44,7 +44,8 @@ class ExampleModule(platform: AmethystPlatform) : AmethystModule(platform) {
 
     override fun commands(): List<CommandNode<in AmethystPlayer>> = listOf(
         NodeBuilder<PermissionHolder>()
-            .name("Example")
+            .name("example")
+            .description("Example command")
             .condition(Condition.alwaysTrue())
             .executes { Component.text("example") }
             .build()
