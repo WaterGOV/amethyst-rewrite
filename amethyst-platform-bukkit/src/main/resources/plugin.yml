@@ -1,0 +1,6 @@
+name: "Amethyst"
+version: "1.0.0-SNAPSHOT" # TODO automate with the build script
+main: net.lucypoulton.amethyst.bukkit.AmethystBukkitPlugin
+commands:
+  amethyst:
+    description: "Amethyst plugin management commands"

@@ -52,4 +52,16 @@ public class CoreDataManager implements DataManager {
             return null;
         }
     }
+
+    // TODO
+    @Override
+    public DataStore globalConfig() {
+        return null;
+    }
+
+    // TODO
+    @Override
+    public DataStore globalData() {
+        return null;
+    }
 }

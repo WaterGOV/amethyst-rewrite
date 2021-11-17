@@ -21,17 +21,46 @@
  */
 
 plugins {
-    `java-library`
+    java
+    id("com.github.johnrengelman.shadow") version "7.1.0"
+}
+
+tasks {
+    jar {
+        archiveClassifier.set("nodeps")
+    }
+    shadowJar {
+        archiveClassifier.set("")
+        outputs.upToDateWhen { false }
+        relocate("net.kyori", "net.lucypoulton.amethyst.dependency.kyori")
+        relocate("net.lucypoulton.squirtgun", "net.lucypoulton.amethyst.dependency.squirtgun")
+        relocate("org.spongepowered.configurate", "net.lucypoulton.amethyst.dependency.configurate")
+
+        dependencies {
+            exclude(dependency("com.google..*:.*:.*"))
+            exclude(dependency("io.leangen.geantyref:.*:.*"))
+        }
+    }
+    build {
+        dependsOn(shadowJar)
+    }
 }
 
 repositories {
     mavenCentral()
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 }
 
 dependencies {
     implementation(platform(project(":amethyst-bom")))
-    implementation(project(":amethyst-api"))
+    implementation(project(":amethyst-core"))
 
-    implementation("com.google.code.gson:gson")
-    implementation("org.spongepowered:configurate-gson")
+    compileOnly("net.kyori:adventure-api")
+
+    implementation("net.lucypoulton:squirtgun-api")
+    implementation("org.spongepowered:configurate-core")
+
+    implementation("net.lucypoulton:squirtgun-platform-bukkit")
+    compileOnly("org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("org.jetbrains:annotations")
 }

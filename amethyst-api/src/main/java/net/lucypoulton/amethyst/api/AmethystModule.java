@@ -24,8 +24,9 @@ package net.lucypoulton.amethyst.api;
 
 import net.kyori.adventure.text.Component;
 import net.lucypoulton.amethyst.api.audience.AmethystPlayer;
+import net.lucypoulton.amethyst.api.platform.AmethystPlatform;
 import net.lucypoulton.squirtgun.command.node.CommandNode;
-import net.lucypoulton.squirtgun.util.SemanticVersion;
+import net.lucypoulton.squirtgun.plugin.SquirtgunPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,39 +35,16 @@ import java.util.List;
 /**
  * A module.
  */
-public interface AmethystModule {
+public abstract class AmethystModule extends SquirtgunPlugin<AmethystPlatform> {
 
-    /**
-     * Gets this module's name.
-     */
-    @NotNull String name();
-
-    /**
-     * Gets this module's version.
-     */
-    @NotNull SemanticVersion version();
-
-    /**
-     * Gets this module's authors.
-     */
-    @NotNull String[] authors();
-
-    /**
-     * Reloads this module.
-     */
-    default void reload() {
-    }
-
-    /**
-     * Prepares this module for disposal.
-     */
-    default void dispose() {
+    public AmethystModule(@NotNull AmethystPlatform platform) {
+        super(platform);
     }
 
     /**
      * Gets the commands that this module exposes.
      */
-    default @NotNull List<CommandNode<? super AmethystPlayer>> commands() {
+    public @NotNull List<CommandNode<? super AmethystPlayer>> commands() {
         return List.of();
     }
 
@@ -82,7 +60,7 @@ public interface AmethystModule {
      * @since 1.0.0
      */
     @Nullable
-    default Component parsePlaceholder(String in, @Nullable AmethystPlayer user) {
+    public Component parsePlaceholder(String in, @Nullable AmethystPlayer user) {
         return null;
     }
 }

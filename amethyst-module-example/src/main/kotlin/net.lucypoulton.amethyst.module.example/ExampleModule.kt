@@ -25,6 +25,7 @@ package net.lucypoulton.amethyst.module.example
 import net.kyori.adventure.text.Component
 import net.lucypoulton.amethyst.api.AmethystModule
 import net.lucypoulton.amethyst.api.audience.AmethystPlayer
+import net.lucypoulton.amethyst.api.platform.AmethystPlatform
 import net.lucypoulton.squirtgun.command.condition.Condition
 import net.lucypoulton.squirtgun.command.node.CommandNode
 import net.lucypoulton.squirtgun.command.node.NodeBuilder
@@ -34,12 +35,12 @@ import net.lucypoulton.squirtgun.util.SemanticVersion
 /**
  * An example Amethyst module.
  */
-class ExampleModule : AmethystModule {
-    override fun name() = "example"
+class ExampleModule(platform: AmethystPlatform) : AmethystModule(platform) {
+    override fun getPluginName() = "example"
 
-    override fun version(): SemanticVersion = SemanticVersion.parse("1.0.0-SNAPSHOT")
+    override fun getPluginVersion(): SemanticVersion = SemanticVersion.parse("1.0.0-SNAPSHOT")
 
-    override fun authors() = arrayOf("Lucy Poulton")
+    override fun getAuthors() = arrayOf("Lucy Poulton")
 
     override fun commands(): List<CommandNode<in AmethystPlayer>> = listOf(
         NodeBuilder<PermissionHolder>()

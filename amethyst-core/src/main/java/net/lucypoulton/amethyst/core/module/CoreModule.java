@@ -20,53 +20,59 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.core;
+package net.lucypoulton.amethyst.core.module;
 
+import net.lucypoulton.amethyst.api.AmethystModule;
+import net.lucypoulton.amethyst.api.audience.AmethystPlayer;
 import net.lucypoulton.amethyst.api.platform.AmethystPlatform;
-import net.lucypoulton.amethyst.core.module.CoreModule;
-import net.lucypoulton.squirtgun.platform.event.EventHandler;
-import net.lucypoulton.squirtgun.platform.event.PluginReloadEvent;
-import net.lucypoulton.squirtgun.plugin.SquirtgunPlugin;
+import net.lucypoulton.squirtgun.command.condition.Condition;
+import net.lucypoulton.squirtgun.command.node.CommandNode;
+import net.lucypoulton.squirtgun.command.node.NodeBuilder;
+import net.lucypoulton.squirtgun.command.node.subcommand.SubcommandNode;
+import net.lucypoulton.squirtgun.platform.audience.PermissionHolder;
 import net.lucypoulton.squirtgun.util.SemanticVersion;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import java.util.List;
 
-public class AmethystPlugin extends SquirtgunPlugin<AmethystPlatform> {
-    public AmethystPlugin(@NotNull CoreAmethystPlatform platform) {
+public class CoreModule extends AmethystModule {
+
+    private final CommandNode<PermissionHolder> node = SubcommandNode.withHelp(
+        "amethyst",
+        "Core commands for Amethyst",
+        Condition.alwaysTrue(),
+        new NodeBuilder<>()
+            .name("version")
+            .description("Shows the Amethyst core and modules' versions.")
+            .condition(Condition.alwaysTrue())
+            // TODO - show module versions here too
+            .executes(ctx ->
+                ctx.getFormat().formatMain("Amethyst version ")
+                    .append(ctx.getFormat().formatAccent(this.getPlatform().amethystVersion().toString())))
+            .build()
+    );
+
+    public CoreModule(@NotNull AmethystPlatform platform) {
         super(platform);
-        try {
-            platform.setDataPath(platform.getConfigPath(this).resolve("data"));
-            platform.getModuleManager().loadModule(CoreModule.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void onEnable() {
-        getPlatform().getEventManager().register(
-            EventHandler.executes(PluginReloadEvent.class, x -> getPlatform().getModuleManager().reloadModules())
-        );
     }
 
     @Override
     public @NotNull String getPluginName() {
-        return "Amethyst";
+        return "Core";
     }
 
     @Override
     public @NotNull SemanticVersion getPluginVersion() {
-        return SemanticVersion.parse("1.0.0-SNAPSHOT");
+        return getPlatform().amethystVersion();
     }
 
     @Override
     public @NotNull String[] getAuthors() {
-        return new String[]{"Lucy Poulton"};
+        return new String[] {"Lucy Poulton"};
     }
 
     @Override
-    public void reload() {
-        super.reload();
+    public @NotNull List<CommandNode<? super AmethystPlayer>> commands() {
+        return List.of(node);
     }
 }

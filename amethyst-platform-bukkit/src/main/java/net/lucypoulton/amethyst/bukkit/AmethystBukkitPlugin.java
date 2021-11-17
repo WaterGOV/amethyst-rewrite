@@ -20,17 +20,29 @@
  * SOFTWARE.
  */
 
-package net.lucypoulton.amethyst.api.platform;
+package net.lucypoulton.amethyst.bukkit;
 
-/**
- * An exception thrown when initialising a module.
- */
-public class ModuleInitException extends RuntimeException {
-    public ModuleInitException(String reason) {
-        super(reason);
+import net.lucypoulton.amethyst.core.AmethystPlugin;
+import net.lucypoulton.amethyst.core.CoreAmethystPlatform;
+import net.lucypoulton.squirtgun.bukkit.BukkitPlatform;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class AmethystBukkitPlugin extends JavaPlugin {
+
+    private AmethystPlugin plugin;
+
+    @Override
+    public void onEnable() {
+        BukkitPlatform bukkitPlatform = new BukkitPlatform(this);
+        CoreAmethystPlatform platform = new CoreAmethystPlatform(bukkitPlatform);
+
+        plugin = new AmethystPlugin(platform);
+
+        plugin.onEnable();
     }
 
-    public ModuleInitException(String reason, Throwable cause) {
-        super(reason, cause);
+    @Override
+    public void onDisable() {
+        plugin.onDisable();
     }
 }

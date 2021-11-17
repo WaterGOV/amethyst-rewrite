@@ -29,4 +29,8 @@ import java.util.UUID;
  */
 public interface DataManager {
     DataStore forPlayer(UUID uuid);
+
+    DataStore globalConfig();
+
+    DataStore globalData();
 }

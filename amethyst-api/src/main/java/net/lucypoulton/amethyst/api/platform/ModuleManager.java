@@ -38,7 +38,7 @@ public interface ModuleManager {
     <T extends AmethystModule> @Nullable T getModule(Class<T> clazz);
 
     /**
-     * Gets the instance of a module.
+     * Gets the instance of a module. Case-insensitive.
      *
      * @param name the name of the module to retrieve
      * @return the module instance, or null if it's not registered
@@ -60,7 +60,7 @@ public interface ModuleManager {
      * @throws ModuleInitException if an exception is thrown when the module is instantiated or enabled
      * @since 1.0.0
      */
-    void loadModule(Class<? extends AmethystModule> clazz) throws ModuleInitException;
+    <T extends AmethystModule> void loadModule(Class<T> clazz) throws ModuleInitException;
 
     /**
      * Unloads a module, deregistering its commands and listeners.

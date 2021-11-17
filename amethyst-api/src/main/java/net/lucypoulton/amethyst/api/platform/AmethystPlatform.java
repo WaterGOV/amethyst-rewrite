@@ -25,11 +25,12 @@ package net.lucypoulton.amethyst.api.platform;
 import net.kyori.adventure.text.Component;
 import net.lucypoulton.amethyst.api.audience.AmethystPlayer;
 import net.lucypoulton.amethyst.api.data.DataStore;
+import net.lucypoulton.squirtgun.format.FormatProvider;
 import net.lucypoulton.squirtgun.platform.Platform;
 import net.lucypoulton.squirtgun.platform.audience.SquirtgunPlayer;
+import net.lucypoulton.squirtgun.util.SemanticVersion;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface AmethystPlatform extends Platform {
@@ -72,5 +73,15 @@ public interface AmethystPlatform extends Platform {
      * @return a Component, possibly containing extra data, including the parsed placeholders
      */
     Component parsePlaceholders(String input, @Nullable AmethystPlayer user);
+
+    /**
+     * Gets the plugin's global {@link FormatProvider} to ensure everything looks uniform.
+     */
+    FormatProvider format();
+
+    /**
+     * Gets the Amethyst core's version.
+     */
+    SemanticVersion amethystVersion();
 }
 
